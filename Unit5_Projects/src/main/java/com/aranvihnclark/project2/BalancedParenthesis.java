@@ -8,32 +8,31 @@ public class BalancedParenthesis {
     public static void main(String[] args) {
         // Step1 Testing
         System.out.println("Parenthesis Only Testing:");
-        System.out.println(isBalanced("()")); // true
-        System.out.println(isBalanced("()())(")); // false
-        System.out.println(isBalanced("I just thought, hey, what's up? (At least I wanted to)")); // true
-        System.out.println(isBalanced("There are (so I think) a lot of ways to fail this... ? ((This should fail)")); // false
+        System.out.println(isBalancedParenthesis("()")); // true
+        System.out.println(isBalancedParenthesis("()())(")); // false
+        System.out.println(isBalancedParenthesis("I just thought, hey, what's up? (At least I wanted to)")); // true
+        System.out.println(isBalancedParenthesis("There are (so I think) a lot of ways to fail this... ? ((This should fail)")); // false
 
         // Step 1, 2, and 3 Testing
         System.out.println("\nAll Brackets Testing:");
-        System.out.println(isBalanced("There are <so I think> a lot of ways to fail this... ? ((This should fail)")); // false
-        System.out.println(isBalanced("[][]()()<>{}{{}}")); // true
-        System.out.println(isBalanced("{LikeThis} = [90] / (30 * 10) + <11 % (110 / 10)>")); // true
-        System.out.println(isBalanced("{LikeThis} = [90] / (30 * 10) + [<11 % (110 / 10)>} - (0 + 15)")); // false
-        System.out.println(isBalanced("()()(")); // false
+        System.out.println(isBalancedBracket("There are <so I think> a lot of ways to fail this... ? ((This should fail)")); // false
+        System.out.println(isBalancedBracket("[][]()()<>{}{{}}")); // true
+        System.out.println(isBalancedBracket("{LikeThis} = [90] / (30 * 10) + <11 % (110 / 10)>")); // true
+        System.out.println(isBalancedBracket("{LikeThis} = [90] / (30 * 10) + [<11 % (110 / 10)>} - (0 + 15)")); // false
+        System.out.println(isBalancedBracket("()()(")); // false
 
         // Multi-nested Testing
         System.out.println("\nMulti-nested Testing:");
-        System.out.println(isBalanced("<()[()]>")); // true
-        System.out.println(isBalanced("{{[<(<>{})>]()<[]>}}")); // true
-        System.out.println(isBalanced("{{[(<(<>())]()<[]>}}")); // false
+        System.out.println(isBalancedData("<()[()]>")); // true
+        System.out.println(isBalancedData("{{[<(<>{})>]()<[]>}}")); // true
+        System.out.println(isBalancedData("{{[(<(<>())]()<[]>}}")); // false
     }
 
-    public static boolean isBalanced(String string) {
-/*
+    public static boolean isBalancedParenthesis(String string) {
+
 //**********************************************
 //******* Step 1 - Balanced Parenthesis ********
 //**********************************************
-
 // The runtime complexity for this is O(n) because we iterate through our string (of unknown size n) once no matter what.
 
         // For simplicity's sake, I was going to use 2 variables, but we can just use one.
@@ -62,14 +61,15 @@ public class BalancedParenthesis {
 
         // Then we can return an argument check
         return count == 0;
-*/
+    }
 
-/*
+
 //**********************************************
 //********* Step2 - Balanced Brackets **********
 //**********************************************
-
 // The runtime complexity of this is O(n), since we iterate through our string (with an unknown size n) once no matter what.
+
+    public static boolean isBalancedBracket(String string) {
 
         int roundCount = 0;
         int squareCount = 0;
@@ -109,12 +109,15 @@ public class BalancedParenthesis {
         }
 
         return roundCount == 0 && squareCount == 0 && curlyCount == 0 && pointedCount == 0;
-*/
+    }
 
+
+    public static boolean isBalancedData(String string) {
 //**********************************************
 //**** Step3 - Implement the Data Structure*****
 //**********************************************
 // Runtime complexity is O(n)Log(n) I think.
+
         // Using a stack as our data structure since that was the point of the videos.
         Stack<Character> fullStack = new Stack<>();
 
@@ -227,7 +230,6 @@ public class BalancedParenthesis {
         }
         return true;
     }
-}
 
 //**********************************************
 //************* Step4 - Reflection *************
@@ -257,3 +259,85 @@ Being unfamiliar with how to deal with stacks and hashmaps, I at least wanted to
 As for how the implementation of the stack would change if I used a queue, I would sya
 
  */
+
+    public static boolean balancedParenthesis(String string) {
+        Stack<Character> fullStack = new Stack<>();
+        Map<Character, Character> bracketMap = new HashMap<>();
+
+        bracketMap.put(')', '(');
+        bracketMap.put(']', '[');
+        bracketMap.put('}', '{');
+        bracketMap.put('>', '<');
+
+        // Added a check to see if the string is empty. Returns true as the brackets are technically balanced.
+        if (string.equals("")) {
+            return true;
+        }
+
+        // Added a check for the first char to see if it is a closed bracket.
+        if (bracketMap.containsKey(string.charAt(0))) {
+            return false;
+        }
+
+        for (int i = 0; i < string.length(); i++) {
+            char c = string.charAt(i);
+
+            if (c == '(' || c == '[' || c == '{' || c == '<' || c == ')' || c == ']' || c == '}' || c == '>') {
+                fullStack.push(c);
+            }
+        }
+
+        for (int i = 0; i < string.length(); i++) {
+            Character key = fullStack.pop();
+
+            if (!bracketMap.containsKey(key)) {
+                return false;
+            }
+
+            Character value = bracketMap.get(key);
+            int index = fullStack.size() - 1;
+            Character testValue = fullStack.peek();
+
+            if (bracketMap.containsKey(testValue)) {
+                int keyCount = 2;
+                int valueCount = 0;
+
+                while (index > 0) {
+                    index--;
+                    testValue = fullStack.elementAt(index);
+
+                    if (bracketMap.containsValue(testValue)) {
+                        valueCount++;
+
+                        if (valueCount == keyCount) {
+
+                            if (!testValue.equals(bracketMap.get(key))) {
+                                return false;
+
+                            } else {
+                                fullStack.remove(index);
+                                break;
+                            }
+                        }
+                    } else {
+                        keyCount++;
+                    }
+                }
+
+            } else {
+                testValue = fullStack.elementAt(index);
+
+                if (!testValue.equals(value)) {
+                    return false;
+                } else {
+                    fullStack.remove(index);
+                }
+            }
+
+            if (fullStack.isEmpty()) {
+                break;
+            }
+        }
+        return true;
+    }
+}
