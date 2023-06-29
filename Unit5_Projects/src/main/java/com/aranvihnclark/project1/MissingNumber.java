@@ -23,6 +23,11 @@ public class MissingNumber {
 
     public static int findMissingNumberOne(int[] arr, int maxNum) {
 
+        // Added this after Project 4's test method creation - realized I needed this.
+        if (maxNum == arr.length) {
+            return 0;
+        }
+
         // Variable to hold the total that the array parameter should have if it was all added.
         // Since our for loop later won't add this for us, we can just have our total start out equaling "maxNum".
         int total = maxNum;
@@ -52,6 +57,11 @@ public class MissingNumber {
         // The 'maxNum' parameter is honestly not needed as all we needed to do to get it is "arr.length".
         // As such, I will repurpose this variable where it will represent the missing number for this purpose.
         // ** This was coded under the impression I didn't need to worry about an array not missing a value.
+
+        // Added this after Project 4's test method creation - realized I needed this.
+        if (maxNum == arr.length) {
+            return 0;
+        }
 
         // We iterate through each value in the array again.
         for (int i = 0; i < arr.length; i++) {
